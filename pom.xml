@@ -7,10 +7,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>25</maven.compiler.release>
         <mainClass>us.malfeasant.templatefx.Launch</mainClass>
         <mainModuleClass>us.malfeasant.templatefx/us.malfeasant.templatefx.App</mainModuleClass>
-        <javafx.version>21</javafx.version>
+        <javafx.version>25</javafx.version>
     </properties>
 
     <dependencies>
