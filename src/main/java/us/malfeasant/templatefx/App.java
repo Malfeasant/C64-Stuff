@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import us.malfeasant.c64stuff.SpriteEditor;
 
 /**
  * JavaFX App
@@ -17,7 +18,7 @@ public class App extends Application {
     public void start(Stage stage) {
         var grid = new GridPane(5.0, 5.0);
         var charButton = newButton("Character", e -> {});
-        var spriteButton = newButton("Sprite", e -> {});
+        var spriteButton = newButton("Sprite", e -> SpriteEditor.standalone());
         var bitmapButton = newButton("Bitmap", e -> {});
         var hexButton = newButton("Raw Hex", e -> {});
         var asmButton = newButton("Assemble", e -> {});

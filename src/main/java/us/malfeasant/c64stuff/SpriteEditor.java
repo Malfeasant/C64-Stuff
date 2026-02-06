@@ -1,7 +1,12 @@
 package us.malfeasant.c64stuff;
 
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class SpriteEditor {
     private ArrayLike bytes;
@@ -14,7 +19,17 @@ public class SpriteEditor {
     public SpriteEditor(ArrayLike bytes) {
         this.bytes = bytes;
 
+        var itemNew = new MenuItem("New...");
+        var itemOpen = new MenuItem("Open...");
+        var itemSave = new MenuItem("Save");
+        var itemSaveAs = new MenuItem("Save as...");
+        var itemExit = new MenuItem("Exit");
+        var menuFile = new Menu("File", null, 
+            itemNew, itemOpen, itemSave, itemSaveAs, itemExit);
+        var menuBar = new MenuBar(menuFile);
+
         pane = new BorderPane();
+        pane.setTop(menuBar);
     }
 
     /**
@@ -25,5 +40,41 @@ public class SpriteEditor {
      */
     public Pane getPane() {
         return pane;
+    }
+
+    /**
+     * before closing window, ask user if they want to save, or similar preparation
+     * @return true if ok to close, false should do nothing.
+     */
+    public boolean prepareClose() {
+        // TODO check if modified, save dialog maybe
+        return true;
+    }
+
+    /**
+     * Builds a window and a new Editor with a basic implementation of the ArrayLike interface
+     */
+    public static void standalone() {
+        var bytes = new ArrayLike() {
+            private byte[] bytes = new byte[63];
+
+            @Override
+            public void set(int index, int value) {
+                bytes[index] = (byte) value;
+            }
+
+            @Override
+            public int get(int index) {
+                return bytes[index] & 0xff; // needed otherwise we might get a negative
+            }
+        };
+        var editor = new SpriteEditor(bytes);
+        Stage stage = new Stage();
+        stage.setOnCloseRequest(e -> {
+            if (!editor.prepareClose()) e.consume();;
+        });
+        stage.setTitle("C=64 Sprite Editor");
+        stage.setScene(new Scene(editor.getPane()));
+        stage.show();
     }
 }
