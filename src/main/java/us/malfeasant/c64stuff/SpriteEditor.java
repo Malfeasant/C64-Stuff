@@ -4,21 +4,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 public class SpriteEditor {
-    private final byte[] bytes;
+    private ArrayLike bytes;
     private final BorderPane pane;
 
-    public SpriteEditor() {
-        this(new byte[63]);
-    }
     /**
-     * Will make a helper function to extract the array from specific ArrayLike implementations
-     * then call this?
-     * @param bytes an array of (at least) 63 bytes
+     * Builds a new editor with the given array view
+     * @param bytes Something containing an array of (at least) 63 bytes
      */
-    SpriteEditor(byte[] bytes) {
-        if (bytes.length < 63) {
-            throw new ArrayIndexOutOfBoundsException("Array must be at least 63 bytes long.");
-        }
+    public SpriteEditor(ArrayLike bytes) {
         this.bytes = bytes;
 
         pane = new BorderPane();
