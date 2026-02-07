@@ -1,19 +1,26 @@
 package us.malfeasant.c64stuff.sprite;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import us.malfeasant.c64stuff.common.ArrayLike;
+import us.malfeasant.c64stuff.common.ColorButton;
+import us.malfeasant.c64stuff.common.Palette;
 
 public class SpriteEditor {
     private ArrayLike bytes;
     private boolean modified = false;
     private final BorderPane pane;
+    
+    private final BooleanProperty multiColorProperty;
 
     /**
      * Builds a new editor with the given array view
@@ -32,8 +39,24 @@ public class SpriteEditor {
             itemNew, itemOpen, itemSave, itemSaveAs, itemExit);
         var menuBar = new MenuBar(menuFile);
 
+        var buttonMulti = new ToggleButton("Multicolor");
+        buttonMulti.setMaxWidth(Double.MAX_VALUE);
+        multiColorProperty = buttonMulti.selectedProperty();
+
+        var buttonColor0 = new ColorButton("Background", Palette.BLUE);
+        var buttonColor1 = new ColorButton("Forground", Palette.LBLUE);
+        var buttonColor2 = new ColorButton("Multicolor 0", Palette.PURPLE);
+        var buttonColor3 = new ColorButton("Multicolor 1", Palette.BLACK);
+        buttonColor2.button.visibleProperty().bind(multiColorProperty);
+        buttonColor3.button.visibleProperty().bind(multiColorProperty);
+        var grid = new GridPane(5.0, 5.0);
+        grid.addColumn(0, buttonMulti,
+            buttonColor0.button, buttonColor1.button,
+            buttonColor2.button, buttonColor3.button);
+        
         pane = new BorderPane();
         pane.setTop(menuBar);
+        pane.setLeft(grid);
     }
 
     /**
@@ -56,7 +79,7 @@ public class SpriteEditor {
     }
 
     private void tryClose(Event e) {
-        if (canClose()) e.consume();
+        if (!canClose()) e.consume();
     }
 
     /**
