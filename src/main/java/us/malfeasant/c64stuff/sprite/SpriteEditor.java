@@ -1,5 +1,6 @@
-package us.malfeasant.c64stuff;
+package us.malfeasant.c64stuff.sprite;
 
+import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -7,6 +8,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import us.malfeasant.c64stuff.common.ArrayLike;
 
 public class SpriteEditor {
     private ArrayLike bytes;
@@ -25,6 +27,7 @@ public class SpriteEditor {
         var itemSave = new MenuItem("Save");
         var itemSaveAs = new MenuItem("Save as...");
         var itemExit = new MenuItem("Exit");
+        itemExit.setOnAction(e -> tryClose(e));
         var menuFile = new Menu("File", null, 
             itemNew, itemOpen, itemSave, itemSaveAs, itemExit);
         var menuBar = new MenuBar(menuFile);
@@ -47,9 +50,13 @@ public class SpriteEditor {
      * before closing window, ask user if they want to save, or similar preparation
      * @return true if ok to close, false should do nothing.
      */
-    private boolean prepareClose() {
+    private boolean canClose() {
         // TODO check if modified, save dialog maybe
         return true;
+    }
+
+    private void tryClose(Event e) {
+        if (canClose()) e.consume();
     }
 
     /**
@@ -71,9 +78,7 @@ public class SpriteEditor {
         };
         var editor = new SpriteEditor(bytes);
         Stage stage = new Stage();
-        stage.setOnCloseRequest(e -> {
-            if (!editor.prepareClose()) e.consume();;
-        });
+        stage.setOnCloseRequest(e -> editor.tryClose(e));
         stage.setTitle("C=64 Sprite Editor");
         stage.setScene(new Scene(editor.getPane()));
         stage.show();

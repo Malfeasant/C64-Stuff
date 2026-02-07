@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import us.malfeasant.c64stuff.SpriteEditor;
+import us.malfeasant.c64stuff.sprite.SpriteEditor;
 
 /**
  * JavaFX App
