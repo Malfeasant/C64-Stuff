@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 public class SpriteEditor {
     private ArrayLike bytes;
+    private boolean modified = false;
     private final BorderPane pane;
 
     /**
@@ -46,7 +47,7 @@ public class SpriteEditor {
      * before closing window, ask user if they want to save, or similar preparation
      * @return true if ok to close, false should do nothing.
      */
-    public boolean prepareClose() {
+    private boolean prepareClose() {
         // TODO check if modified, save dialog maybe
         return true;
     }
