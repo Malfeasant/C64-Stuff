@@ -1,4 +1,4 @@
-A Template for JavaFX applications.
+A collection of random utilities for working with Commodore 64 memory ranges- sprite editor, character set editor, bitmap editor...
 
 Uses Maven Shade plugin to create a fat jar (.jar file including all the JavaFX platform-specific dependencies for whatever platform you're building on)
 
