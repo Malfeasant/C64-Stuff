@@ -49,14 +49,16 @@ public class SpriteEditor {
         var buttonColor3 = new ColorButton("Multicolor 1", Palette.BLACK);
         buttonColor2.button.visibleProperty().bind(multiColorProperty);
         buttonColor3.button.visibleProperty().bind(multiColorProperty);
-        var grid = new GridPane(5.0, 5.0);
-        grid.addColumn(0, buttonMulti,
+        var gridButtonColor = new GridPane(5.0, 5.0);
+        gridButtonColor.addColumn(0, buttonMulti,
             buttonColor0.button, buttonColor1.button,
             buttonColor2.button, buttonColor3.button);
         
+        var gridSpriteView = new GridPane(5.0, 5.0);
+        
         pane = new BorderPane();
         pane.setTop(menuBar);
-        pane.setLeft(grid);
+        pane.setLeft(gridButtonColor);
     }
 
     /**
