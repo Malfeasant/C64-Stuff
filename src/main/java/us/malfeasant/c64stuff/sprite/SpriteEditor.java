@@ -1,7 +1,5 @@
 package us.malfeasant.c64stuff.sprite;
 
-import java.util.Arrays;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.event.Event;
 import javafx.scene.Scene;
@@ -162,9 +160,6 @@ public class SpriteEditor {
             }
             b ^= 0xff;
         }
-/*       for (byte b = 0; b < 3 * SPRITE_HEIGHT; ++b) {
-            bytes.bytes[b] = b;
-       }*/
 
         var editor = new SpriteEditor(bytes);
         Stage stage = new Stage();
