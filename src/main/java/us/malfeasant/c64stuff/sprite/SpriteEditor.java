@@ -1,5 +1,7 @@
 package us.malfeasant.c64stuff.sprite;
 
+import java.util.Arrays;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.event.Event;
 import javafx.scene.Scene;
@@ -96,7 +98,7 @@ public class SpriteEditor {
         var writer = pattern.getPixelWriter();
         for (int row = 0; row < SPRITE_HEIGHT; ++row) {
             for (int col = 0; col < 3; ++col) {
-                int b = bytes.get(col * 3 + row);
+                int b = bytes.get(row * 3 + col);
                 for (int bit = 0; bit < 8; ++bit) {
                     int i = b >> (7 - bit);
                     Color c = colors[i & 1].colorProperty.get().color;
@@ -153,11 +155,17 @@ public class SpriteEditor {
             }
         };
         // Test pattern
+        byte b = (byte) 0xaa;
         for (int row = 0; row < SPRITE_HEIGHT; ++row) {
             for (int col = 0; col < 3; ++col) {
-                bytes.bytes[row * 3 + col] = (byte) ((row / 2) * 2 == row ? 0xaa : 0x55);
+                bytes.bytes[row * 3 + col] = b;
             }
+            b ^= 0xff;
         }
+/*       for (byte b = 0; b < 3 * SPRITE_HEIGHT; ++b) {
+            bytes.bytes[b] = b;
+       }*/
+
         var editor = new SpriteEditor(bytes);
         Stage stage = new Stage();
         stage.setOnCloseRequest(e -> editor.tryClose(e));
