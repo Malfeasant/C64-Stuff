@@ -22,8 +22,8 @@ public class SpriteEditor {
     private static final int SPRITE_WIDTH = 24;
     private static final int SPRITE_HEIGHT = 21;
     // Enlarge the pixels for modern display.  Try to get the aspect ratio right.
-    private static final double VIEW_WIDTH = 0.92 * 3;
-    private static final double VIEW_HEIGHT = 1.1 * 3;
+    private static final double VIEW_WIDTH = 0.92 * 3 * SPRITE_WIDTH;
+    private static final double VIEW_HEIGHT = 1.1 * 3 * SPRITE_HEIGHT;
 
     private ArrayLike bytes;
     private boolean modified = false;
@@ -72,20 +72,20 @@ public class SpriteEditor {
         imageViewEditor.setFitHeight(8 * VIEW_HEIGHT);
 
         var imageViewNormal = new ImageView(pattern);
-        imageViewEditor.setFitWidth(1 * VIEW_WIDTH);
-        imageViewEditor.setFitHeight(1 * VIEW_HEIGHT);
+        imageViewNormal.setFitWidth(1 * VIEW_WIDTH);
+        imageViewNormal.setFitHeight(1 * VIEW_HEIGHT);
 
         var imageViewWide = new ImageView(pattern);
-        imageViewEditor.setFitWidth(2 * VIEW_WIDTH);
-        imageViewEditor.setFitHeight(1 * VIEW_HEIGHT);
+        imageViewWide.setFitWidth(2 * VIEW_WIDTH);
+        imageViewWide.setFitHeight(1 * VIEW_HEIGHT);
 
         var imageViewTall = new ImageView(pattern);
-        imageViewEditor.setFitWidth(1 * VIEW_WIDTH);
-        imageViewEditor.setFitHeight(2 * VIEW_HEIGHT);
+        imageViewTall.setFitWidth(1 * VIEW_WIDTH);
+        imageViewTall.setFitHeight(2 * VIEW_HEIGHT);
 
         var imageViewLarge = new ImageView(pattern);
-        imageViewEditor.setFitWidth(2 * VIEW_WIDTH);
-        imageViewEditor.setFitHeight(2 * VIEW_HEIGHT);
+        imageViewLarge.setFitWidth(2 * VIEW_WIDTH);
+        imageViewLarge.setFitHeight(2 * VIEW_HEIGHT);
 
         var gridSpriteView = new GridPane(5.0, 5.0);
         gridSpriteView.addRow(0, imageViewNormal, imageViewWide);
