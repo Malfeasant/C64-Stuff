@@ -3,12 +3,15 @@ package us.malfeasant.c64stuff.sprite;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.Event;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -21,9 +24,10 @@ import us.malfeasant.c64stuff.common.Palette;
 public class SpriteEditor {
     private static final int SPRITE_WIDTH = 24;
     private static final int SPRITE_HEIGHT = 21;
+    private static final int EDITOR_ZOOM = 8;
     // Enlarge the pixels for modern display.  Try to get the aspect ratio right.
-    private static final double VIEW_WIDTH = 0.92 * 3 * SPRITE_WIDTH;
-    private static final double VIEW_HEIGHT = 1.1 * 3 * SPRITE_HEIGHT;
+    private static final double VIEW_WIDTH = 0.91 * 3 * SPRITE_WIDTH;
+    private static final double VIEW_HEIGHT = 1.09 * 3 * SPRITE_HEIGHT;
 
     private ArrayLike bytes;
     private boolean modified = false;
@@ -32,6 +36,7 @@ public class SpriteEditor {
     private final BooleanProperty multiColorProperty;
 
     private final ColorButton[] colors;
+    private final Canvas canvasEditor;
 
     /**
      * Builds a new editor with the given array view
@@ -67,10 +72,9 @@ public class SpriteEditor {
             colors[0].button, colors[1].button,
             colors[2].button, colors[3].button);
         
-        var imageViewEditor = new ImageView(pattern);
-        imageViewEditor.setFitWidth(8 * VIEW_WIDTH);
-        imageViewEditor.setFitHeight(8 * VIEW_HEIGHT);
-
+        canvasEditor = new Canvas(EDITOR_ZOOM * VIEW_WIDTH, EDITOR_ZOOM * VIEW_HEIGHT);
+        canvasEditor.setOnMouseClicked(e -> handleEditorClick(e));
+        
         var imageViewNormal = new ImageView(pattern);
         imageViewNormal.setFitWidth(1 * VIEW_WIDTH);
         imageViewNormal.setFitHeight(1 * VIEW_HEIGHT);
@@ -91,25 +95,12 @@ public class SpriteEditor {
         gridSpriteView.addRow(0, imageViewNormal, imageViewWide);
         gridSpriteView.addRow(1, imageViewTall, imageViewLarge);
 
-        // TODO eventually will have to detect when pattern changes, then redraw the
-        // views. but for now, just force it...
-        var writer = pattern.getPixelWriter();
-        for (int row = 0; row < SPRITE_HEIGHT; ++row) {
-            for (int col = 0; col < 3; ++col) {
-                int b = bytes.get(row * 3 + col);
-                for (int bit = 0; bit < 8; ++bit) {
-                    int i = b >> (7 - bit);
-                    Color c = colors[i & 1].colorProperty.get().color;
-                    writer.setColor(col * 8 + bit, row, c); 
-                }
-            }
-        }
-
         pane = new BorderPane();
         pane.setTop(menuBar);
         pane.setLeft(gridButtonColor);
         pane.setRight(gridSpriteView);
-        pane.setCenter(imageViewEditor);
+        pane.setCenter(canvasEditor);
+        redraw();
     }
 
     /**
@@ -133,6 +124,53 @@ public class SpriteEditor {
 
     private void tryClose(Event e) {
         if (!canClose()) e.consume();
+    }
+
+    private void handleEditorClick(MouseEvent e) {
+        var whichButton = e.getButton();
+        var x = (int) (e.getX() / (EDITOR_ZOOM * SPRITE_WIDTH));
+        var y = (int) (e.getY() / (EDITOR_ZOOM * SPRITE_HEIGHT));
+
+        if (whichButton == MouseButton.PRIMARY) {
+            setBit(x, y, true);
+        } else if (whichButton == MouseButton.SECONDARY) {  // could also be middle...
+            setBit(x, y, false);
+        }
+        redraw();
+    }
+
+    private void setBit(int x, int y, boolean c) {
+        var col = x / 8;
+        var bi = x % 8;
+        var index = y * 3 + col;
+        var power = 1 << (7 - bi);
+        var by = bytes.get(index);
+        if (c) {
+            by |= power;
+        } else {
+            by &= ~power;
+        }
+        bytes.set(index, by);
+    }
+
+    private void redraw() {
+        var writer = pattern.getPixelWriter();
+        var gc = canvasEditor.getGraphicsContext2D();
+        for (int row = 0; row < SPRITE_HEIGHT; ++row) {
+            for (int col = 0; col < 3; ++col) {
+                int b = bytes.get(row * 3 + col);
+                for (int bit = 0; bit < 8; ++bit) {
+                    int i = b >> (7 - bit);
+                    Color c = colors[i & 1].colorProperty.get().color;
+                    writer.setColor(col * 8 + bit, row, c);
+                    gc.setFill(c);
+                    gc.fillRect(col * 3 + bit, row,
+                        EDITOR_ZOOM * VIEW_WIDTH, 
+                        EDITOR_ZOOM * VIEW_HEIGHT
+                    );
+                }
+            }
+        }
     }
 
     /**
