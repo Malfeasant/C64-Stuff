@@ -1,6 +1,6 @@
-module us.malfeasant.templatefx {
+module us.malfeasant.c64stuff {
     requires javafx.controls;
     requires transitive javafx.graphics;
 
-    exports us.malfeasant.templatefx;
+    exports us.malfeasant.c64stuff;
 }
