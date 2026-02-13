@@ -24,10 +24,16 @@ import us.malfeasant.c64stuff.common.Palette;
 public class SpriteEditor {
     private static final int SPRITE_WIDTH = 24;
     private static final int SPRITE_HEIGHT = 21;
+    private static final double WIDTH_CORRECT = 0.91 * 3;
+    private static final double HEIGHT_CORRECT = 1.09 * 3;
     private static final int EDITOR_ZOOM = 8;
+    private static final double EDITOR_ZOOM_WIDTH = EDITOR_ZOOM * WIDTH_CORRECT;
+    private static final double EDITOR_ZOOM_HEIGHT = EDITOR_ZOOM * HEIGHT_CORRECT;
     // Enlarge the pixels for modern display.  Try to get the aspect ratio right.
-    private static final double VIEW_WIDTH = 0.91 * 3 * SPRITE_WIDTH;
-    private static final double VIEW_HEIGHT = 1.09 * 3 * SPRITE_HEIGHT;
+    private static final double VIEW_WIDTH = WIDTH_CORRECT * SPRITE_WIDTH;
+    private static final double VIEW_HEIGHT = HEIGHT_CORRECT * SPRITE_HEIGHT;
+    private static final double EDITOR_WIDTH = EDITOR_ZOOM * WIDTH_CORRECT * SPRITE_WIDTH;
+    private static final double EDITOR_HEIGHT = EDITOR_ZOOM * HEIGHT_CORRECT * SPRITE_HEIGHT;
 
     private ArrayLike bytes;
     private boolean modified = false;
@@ -72,7 +78,7 @@ public class SpriteEditor {
             colors[0].button, colors[1].button,
             colors[2].button, colors[3].button);
         
-        canvasEditor = new Canvas(EDITOR_ZOOM * VIEW_WIDTH, EDITOR_ZOOM * VIEW_HEIGHT);
+        canvasEditor = new Canvas(EDITOR_WIDTH, EDITOR_HEIGHT);
         canvasEditor.setOnMouseClicked(e -> handleEditorClick(e));
         
         var imageViewNormal = new ImageView(pattern);
@@ -128,8 +134,8 @@ public class SpriteEditor {
 
     private void handleEditorClick(MouseEvent e) {
         var whichButton = e.getButton();
-        var x = (int) (e.getX() / (EDITOR_ZOOM * SPRITE_WIDTH));
-        var y = (int) (e.getY() / (EDITOR_ZOOM * SPRITE_HEIGHT));
+        var x = (int) (e.getX() / (EDITOR_ZOOM_WIDTH));
+        var y = (int) (e.getY() / (EDITOR_ZOOM_HEIGHT));
 
         if (whichButton == MouseButton.PRIMARY) {
             setBit(x, y, true);
@@ -164,9 +170,11 @@ public class SpriteEditor {
                     Color c = colors[i & 1].colorProperty.get().color;
                     writer.setColor(col * 8 + bit, row, c);
                     gc.setFill(c);
-                    gc.fillRect(col * 3 + bit, row,
-                        EDITOR_ZOOM * VIEW_WIDTH, 
-                        EDITOR_ZOOM * VIEW_HEIGHT
+                    gc.fillRect(
+                        EDITOR_ZOOM_WIDTH * (col * 8 + bit),
+                        EDITOR_ZOOM_HEIGHT * row,
+                        EDITOR_ZOOM_WIDTH, 
+                        EDITOR_ZOOM_HEIGHT
                     );
                 }
             }
