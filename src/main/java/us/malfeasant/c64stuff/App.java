@@ -1,4 +1,4 @@
-package us.malfeasant.templatefx;
+package us.malfeasant.c64stuff;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;

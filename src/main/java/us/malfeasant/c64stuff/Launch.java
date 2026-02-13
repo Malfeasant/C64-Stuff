@@ -1,4 +1,4 @@
-package us.malfeasant.templatefx;
+package us.malfeasant.c64stuff;
 
 /**
  * This is a hack to run without modules-
